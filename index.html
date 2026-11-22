@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مبروك التخرج يا انتظار</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#1a0f24; --bg2:#2b1638; --gold:#e9c46a; --gold2:#f7e2a8;
+    --rose:#ff8fab; --rose2:#ffc2d1; --ink:#fdf3f6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'Tajawal',sans-serif;color:var(--ink);
+    background:radial-gradient(ellipse at 50% 0%,#4a2257 0%,var(--bg2) 40%,var(--bg1) 100%);
+    min-height:100vh;overflow-x:hidden;
+  }
+  canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:5}
+  .stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .stars i{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;opacity:.6;animation:tw 3s infinite ease-in-out}
+  @keyframes tw{50%{opacity:.1}}
+
+  /* شاشة الظرف */
+  #intro{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;
+    background:inherit;transition:opacity .9s ease, visibility .9s}
+  #intro.hide{opacity:0;visibility:hidden}
+  .envelope{width:190px;height:130px;position:relative;cursor:pointer;animation:float 3s ease-in-out infinite;filter:drop-shadow(0 18px 30px rgba(0,0,0,.45))}
+  .envelope .body{position:absolute;inset:0;background:linear-gradient(160deg,#ffd6e0,#ffb3c6);border-radius:10px}
+  .envelope .flap{position:absolute;top:0;left:0;right:0;height:0;border-left:95px solid transparent;border-right:95px solid transparent;border-top:75px solid #ff9ab3;transform-origin:top;transition:transform .6s}
+  .envelope.open .flap{transform:rotateX(180deg)}
+  .envelope .seal{position:absolute;top:52px;left:50%;transform:translateX(-50%);width:44px;height:44px;border-radius:50%;
+    background:radial-gradient(circle at 35% 35%,#f7e2a8,#c9973a);display:grid;place-items:center;font-size:20px;box-shadow:0 3px 8px rgba(0,0,0,.3)}
+  @keyframes float{50%{transform:translateY(-10px)}}
+  .intro-text{font-size:20px;opacity:.9;text-align:center;line-height:1.8}
+  .btn{font-family:inherit;font-size:18px;font-weight:700;border:none;cursor:pointer;color:#3a1a3f;
+    background:linear-gradient(135deg,var(--gold2),var(--gold));padding:14px 38px;border-radius:999px;
+    box-shadow:0 8px 24px rgba(233,196,106,.35);transition:transform .2s}
+  .btn:active{transform:scale(.96)}
+
+  /* الصفحة الرئيسية */
+  main{position:relative;z-index:2;max-width:640px;margin:0 auto;padding:48px 22px 60px;text-align:center}
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity 1s ease, transform 1s ease}
+  .show .reveal{opacity:1;transform:none}
+  .show .d1{transition-delay:.2s}.show .d2{transition-delay:.7s}.show .d3{transition-delay:1.2s}
+  .show .d4{transition-delay:1.7s}.show .d5{transition-delay:2.2s}.show .d6{transition-delay:2.7s}
+
+  .cap{width:110px;margin:0 auto 6px;display:block;animation:bob 2.6s ease-in-out infinite}
+  @keyframes bob{50%{transform:translateY(-8px) rotate(-4deg)}}
+  .kicker{font-size:17px;letter-spacing:1px;color:var(--rose2)}
+  h1{font-family:'Aref Ruqaa',serif;font-weight:700;font-size:clamp(68px,22vw,120px);line-height:1.25;margin:4px 0 2px;
+    background:linear-gradient(90deg,var(--gold) 0%,#fff6d8 25%,var(--gold) 50%,#fff6d8 75%,var(--gold) 100%);
+    background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;
+    animation:shine 4s linear infinite;text-shadow:0 0 40px rgba(233,196,106,.25)}
+  @keyframes shine{to{background-position:200% center}}
+  .congrats{font-family:'Aref Ruqaa',serif;font-size:clamp(34px,9vw,48px);color:var(--rose)}
+  .dept{display:inline-flex;align-items:center;gap:10px;margin-top:14px;padding:9px 20px;border-radius:999px;
+    border:1px solid rgba(233,196,106,.45);background:rgba(233,196,106,.08);font-size:16px;color:var(--gold2)}
+  .dept svg{width:22px;height:22px}
+
+  .card{margin-top:34px;padding:28px 24px;border-radius:22px;background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(6px);line-height:2.1;font-size:19px}
+  .card b{color:var(--gold2);font-weight:700}
+
+  .love{margin-top:36px}
+  .heart{width:96px;height:96px;cursor:pointer;animation:beat 1.3s ease-in-out infinite;filter:drop-shadow(0 0 22px rgba(255,143,171,.55))}
+  @keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.15)}30%{transform:scale(1)}45%{transform:scale(1.1)}}
+  .love-text{font-family:'Aref Ruqaa',serif;font-size:clamp(40px,11vw,58px);color:var(--rose);margin-top:6px}
+  .hint{font-size:14px;opacity:.6;margin-top:4px}
+
+  .sign{margin-top:34px;font-size:18px;opacity:.85}
+  .sign span{font-family:'Aref Ruqaa',serif;font-size:30px;color:var(--gold);display:block;margin-top:4px}
+  .date{margin-top:22px;font-size:14px;opacity:.55}
+
+  .lab{position:fixed;z-index:1;opacity:.12;pointer-events:none}
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<canvas id="fx"></canvas>
+
+<!-- رموز مختبر خفيفة بالخلفية -->
+<svg class="lab" style="top:12%;right:6%;width:60px" viewBox="0 0 24 24" fill="none" stroke="#e9c46a" stroke-width="1.4"><path d="M9 2h6M10 2v6L4.5 18.5A2.3 2.3 0 0 0 6.5 22h11a2.3 2.3 0 0 0 2-3.5L14 8V2"/><path d="M7 15h10"/></svg>
+<svg class="lab" style="bottom:14%;left:5%;width:70px" viewBox="0 0 24 24" fill="none" stroke="#ff8fab" stroke-width="1.3"><path d="M6 18h8M3 22h18M14 22a7 7 0 1 0 0-14h-1M9 14h2M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></svg>
+<svg class="lab" style="top:55%;right:3%;width:46px" viewBox="0 0 24 24" fill="none" stroke="#e9c46a" stroke-width="1.4"><path d="M4 2c0 6 16 6 16 12S4 16 4 22M20 2c0 6-16 6-16 12s16 2 16 8M7 5h10M7 19h10"/></svg>
+
+<div id="intro">
+  <div class="envelope" id="env">
+    <div class="body"></div>
+    <div class="flap"></div>
+    <div class="seal">🤍</div>
+  </div>
+  <p class="intro-text">عندي إلج رسالة صغيرة<br>بمناسبة يومج الكبير ✨</p>
+  <button class="btn" id="openBtn">افتحيها</button>
+</div>
+
+<main id="main">
+  <svg class="cap reveal d1" viewBox="0 0 120 90">
+    <polygon points="60,8 116,32 60,56 4,32" fill="#2a1736" stroke="#e9c46a" stroke-width="2"/>
+    <path d="M28 44v18c0 8 64 8 64 0V44L60 56Z" fill="#3b2049" stroke="#e9c46a" stroke-width="2"/>
+    <line x1="60" y1="32" x2="100" y2="40" stroke="#e9c46a" stroke-width="2"/>
+    <line x1="100" y1="40" x2="100" y2="66" stroke="#e9c46a" stroke-width="2"/>
+    <circle cx="100" cy="70" r="5" fill="#e9c46a"/>
+  </svg>
+  <p class="kicker reveal d1">إلى أحلى خرّيجة</p>
+  <h1 class="reveal d2">انتظار</h1>
+  <p class="congrats reveal d3">مبروك التخرّج</p>
+  <span class="dept reveal d3">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#f7e2a8" stroke-width="1.6"><path d="M9 2h6M10 2v6L4.5 18.5A2.3 2.3 0 0 0 6.5 22h11a2.3 2.3 0 0 0 2-3.5L14 8V2"/><path d="M7 15h10"/></svg>
+    قسم التحليلات · دفعة 2026
+  </span>
+
+  <div class="card reveal d4">
+    كل سهرة، كل امتحان، وكل تعب…<br>
+    هسه صار <b>شهادة</b> بإيدج 🎓<br>
+    آني فخور بيج أكثر مما تتصورين،<br>
+    وهاي بس البداية… الجاي أحلى إن شاء الله 🤍
+  </div>
+
+  <div class="love reveal d5">
+    <svg class="heart" id="heart" viewBox="0 0 24 24"><path fill="#ff8fab" d="M12 21s-7.5-4.6-10-9.4C.4 8.3 2.3 4 6.3 4c2.3 0 3.8 1.3 4.7 2.7C11.9 5.3 13.4 4 15.7 4c4 0 5.9 4.3 4.3 7.6C19.5 16.4 12 21 12 21Z"/></svg>
+    <p class="love-text">أحبّج</p>
+    <p class="hint">اضغطي على القلب 👆</p>
+  </div>
+
+  <p class="sign reveal d6">من قلبي إلى قلبج<span>عبّاس</span></p>
+  <p class="date reveal d6">٢٣ تشرين الثاني ٢٠٢٦</p>
+</main>
+
+<script>
+// نجوم
+(function(){const s=document.getElementById('stars');for(let i=0;i<70;i++){const e=document.createElement('i');e.style.left=Math.random()*100+'%';e.style.top=Math.random()*100+'%';e.style.animationDelay=(Math.random()*3)+'s';const z=Math.random()*2+1;e.style.width=e.style.height=z+'px';s.appendChild(e);}})();
+
+// مؤثرات: كونفيتي وقلوب
+const cv=document.getElementById('fx'),ctx=cv.getContext('2d');let W,H,parts=[];
+function rs(){W=cv.width=innerWidth*devicePixelRatio;H=cv.height=innerHeight*devicePixelRatio;}
+addEventListener('resize',rs);rs();
+const colors=['#e9c46a','#f7e2a8','#ff8fab','#ffc2d1','#ffffff','#c77dff'];
+function confetti(n){const d=devicePixelRatio;for(let i=0;i<n;i++){parts.push({t:'c',x:Math.random()*W,y:-20*d-Math.random()*H*.5,vx:(Math.random()-.5)*2*d,vy:(Math.random()*2+2)*d,r:Math.random()*Math.PI,vr:(Math.random()-.5)*.2,w:(Math.random()*6+5)*d,h:(Math.random()*4+3)*d,c:colors[Math.random()*colors.length|0],life:1});}}
+function hearts(x,y,n){const d=devicePixelRatio;for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,sp=(Math.random()*4+2)*d;parts.push({t:'h',x:x*d,y:y*d,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-3*d,s:(Math.random()*10+10)*d,c:Math.random()<.6?'#ff8fab':'#e9c46a',life:1});}}
+function drawHeart(x,y,s,c,a){ctx.save();ctx.globalAlpha=a;ctx.fillStyle=c;ctx.translate(x,y);ctx.scale(s/24,s/24);ctx.beginPath();ctx.moveTo(0,6);ctx.bezierCurveTo(-12,-3,-6,-12,0,-5);ctx.bezierCurveTo(6,-12,12,-3,0,6);ctx.fill();ctx.restore();}
+function loop(){ctx.clearRect(0,0,W,H);parts=parts.filter(p=>p.life>0&&p.y<H+40);for(const p of parts){if(p.t==='c'){p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.fillStyle=p.c;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h*Math.abs(Math.cos(p.r*2)));ctx.restore();}else{p.x+=p.vx;p.y+=p.vy;if(p.float){p.life-=.004;}else{p.vy+=.12*devicePixelRatio;p.life-=.012;}drawHeart(p.x,p.y,p.s,p.c,Math.max(p.life,0));}}requestAnimationFrame(loop);}
+loop();
+
+// قلوب تطفو بهدوء
+setInterval(()=>{if(!document.body.classList.contains('show'))return;const d=devicePixelRatio;parts.push({t:'h',x:Math.random()*W,y:H+10,vx:(Math.random()-.5)*.5*d,vy:-(Math.random()*1.2+.8)*d,s:(Math.random()*8+8)*d,c:Math.random()<.5?'#ff8fab':'#ffc2d1',life:1.6,float:true});},900);
+
+
+
+// فتح الرسالة
+function openLetter(){const env=document.getElementById('env');env.classList.add('open');
+  setTimeout(()=>{document.getElementById('intro').classList.add('hide');document.body.classList.add('show');confetti(160);setTimeout(()=>confetti(120),1500);},650);}
+document.getElementById('openBtn').addEventListener('click',openLetter);
+document.getElementById('env').addEventListener('click',openLetter);
+
+// الضغط على القلب
+document.getElementById('heart').addEventListener('click',e=>{const r=e.currentTarget.getBoundingClientRect();hearts(r.left+r.width/2,r.top+r.height/2,26);});
+</script>
+</body>
+</html>
